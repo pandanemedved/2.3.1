@@ -1,6 +1,7 @@
 package com.decision.dao;
 
 import com.decision.entity.User;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import jakarta.persistence.EntityManager;
@@ -20,7 +21,16 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User findById(Long id) {
-        return entityManager.find(User.class, id);
+        User user = entityManager.find(User.class, id);
+        if (user == null) {
+            throw new EntityNotFoundException("Пользователь с таким ID" + id + " не найден");
+        }
+        return user;
+    }
+
+    @Override
+    public void updateUser(User user) {
+        entityManager.merge(user);
     }
 
     @Override
