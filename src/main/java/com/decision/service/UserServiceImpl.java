@@ -2,6 +2,7 @@ package com.decision.service;
 
 import com.decision.dao.UserDao;
 import com.decision.entity.User;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,22 +28,27 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User findById(Long id) {
-        return userDao.findById(id);
+        User findUser = userDao.findById(id);
+        if (findUser == null) {
+            throw new EntityNotFoundException("Пользователь с таким ID" + id + " не найден");
+        }
+        return findUser;
     }
 
     @Override
     @Transactional
     public void updateUser(User user) {
-        User user1 = findById(user.getId());
-
-        user1.setName(user.getName());
-        userDao.updateUser(user1);
+        User updateUser = findById(user.getId());
+        updateUser.setName(user.getName());
+        updateUser.setEmail(user.getEmail());
+        userDao.updateUser(updateUser);
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
-        userDao.delete(id);
+        User deleteUser = findById(id);
+        userDao.delete(deleteUser.getId());
     }
 
     @Override

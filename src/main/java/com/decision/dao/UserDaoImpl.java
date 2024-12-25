@@ -21,11 +21,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User findById(Long id) {
-        User user = entityManager.find(User.class, id);
-        if (user == null) {
-            throw new EntityNotFoundException("Пользователь с таким ID" + id + " не найден");
-        }
-        return user;
+        return entityManager.find(User.class, id);
     }
 
     @Override
@@ -35,10 +31,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void delete(Long id) {
-        User user = findById(id);
-        if (user != null) {
-            entityManager.remove(user);
-        }
+        entityManager.remove(findById(id));
     }
 
     @Override
